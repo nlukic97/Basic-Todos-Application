@@ -1,31 +1,16 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
     <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
+      <li>
+        <input type="checkbox" name="selectAll" id="selectAll">
+        <input type="text" v-bind:placeholder="placeholderValues.question" v-on:keyup.enter="addNewTask"  v-model="newTask.description" name="newTask" id="newTask">
+        <button v-on:click="removeAllTasks">Clear List</button>
+      </li>
+      <li v-for="(item, index) in tasks" v-bind:key="index"> <!--Nije najjasnije sve ovde, konkretno ovo bind -->
+        <input type="checkbox" v-on:click="removeTask(index)" name="clear" id="clear">
+        <span>{{item.description}}</span>
+        <button v-on:click="removeTask(index)">X</button>
+      </li>
     </ul>
   </div>
 </template>
@@ -33,26 +18,51 @@
 <script>
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
+  data: function(){
+    return {
+      tasks:[{
+          description:'Do this and that'
+        },
+        {
+          description:'Do this again but for 2'
+        }
+      ],
+      newTask:[{
+        description:''
+      }],
+      placeholderValues:{
+        question:'What do you need to do?'
+      }
+    }
+  },
+  methods:{
+    addNewTask: function(){
+      this.tasks.unshift({
+        description: this.newTask.description
+      });
+      this.newTask.description = ''; //to clear input on enter
+    },
+    removeTask: function(taskIndex){ //Zasto se cekira odmah ispod opcija nakon sto prva nestane?
+      this.tasks.splice(taskIndex, 1);
+      
+    },
+    removeAllTasks: function(){
+        this.tasks.splice(0,this.tasks.length);
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.hello {
+  border:1px solid red;
+  ul{
+    li{
+      list-style-type: none;
+      display:flex;
+      justify-content: space-around;
+    }
+  }
 }
 </style>
