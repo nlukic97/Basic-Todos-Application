@@ -2,19 +2,19 @@
   <div class="hello">
     <ul>
       <li>
-        <input type="checkbox" v-model="newTask.checked" name="newCheckbox" id="newCheckbox"> <!-- ovo checked nije skroz jasno -->
+        <input type="checkbox" v-model="newTask.checked" name="newCheckbox" id="newCheckbox"> <!-- ovo checked nije skroz jasno, pogledaj jos koji put -->
         <input type="text" v-bind:placeholder="placeholderValues.question" v-on:keyup.enter="addNewTask"  v-model="newTask.description" name="newTask" id="newTask">
-        <button v-on:click="removeAllTasks">Clear List</button>
+        <button id="clearAllBtn" v-on:click="removeAllTasks">Clear List</button>
       </li>
       <li v-for="(item, index) in tasks" v-bind:key="index"> 
         <input type="checkbox" v-model="item.checked" name="checkbox" id="checkbox"> <!-- K -->
         <span>{{item.description}}</span>
-        <!-- <span>{{item.checked}}</span> -->
-        <button v-on:click="removeTask(index)">X</button>
+        <!-- is it checked or not status - uncomment code underneath to check -->
+
+        <!-- <span>{{item.checked}}</span> --> 
+        <button id="removeTaskBtn" v-on:click="removeTask(index)">&#10060;</button>
       </li>
     </ul>
-    <p>Ako submitujemo bez clicka na prvi checkbox (uopste click), nastane problem.</p>
-    <p>Kad onda cekiramo i submitujemo, prikaze se kako treba ali se prvi checkbox ne vraca na unchecked.</p>
   </div>
 </template>
 
@@ -43,7 +43,7 @@ export default {
   },
   methods:{
     addNewTask: function(){
-      //--------------------------------- ima li bolji nacin za ovo? -------------------------------
+      //--------------------------------- ima li bolji nacin za ovo, tj mora li uopste?-------------
       if(this.newTask.checked){
         console.log('checked');
         this.newTask.checked = true;
@@ -54,12 +54,12 @@ export default {
       //---------------------------------------------------------------------------------------------
       this.tasks.unshift({
         description: this.newTask.description,
-        checked: this.newTask.checked, //ne znam kako da napravim da checkbox bude checked ako je novi checked
+        checked: this.newTask.checked
       });
       this.newTask.description = '',
-      this.newTask.checked = false //to reset the box back to normal
+      this.newTask.checked = false //to reset the box back to normal - ima bug
     },
-    removeTask: function(taskIndex){ //Zasto se cekira odmah ispod opcija nakon sto prva nestane?
+    removeTask: function(taskIndex){
       this.tasks.splice(taskIndex, 1);
       
     },
@@ -73,41 +73,70 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .hello {
-  border:1px solid red;
+  border: 1px solid #a5a2a2;
+  margin:15px 60px 0 60px;
   ul{
-    margin:0;
+    overflow: hidden;
+    margin:0px;
     padding:0;
     li{
       list-style-type: none;
       display:flex;
       justify-content: space-around;
       align-items: center;
-      border:1px solid blue;
-      background-color: lightblue;
+      background-color: #3564A4;
       padding:15px 0;
+      margin:0 0 1px 0;
       &:first-child{
-        background-color:gray;
+        background-color:#E7E8EB;
+        margin:0px;
+        z-index:1;
+        position: relative;
+        #newTask{
+          border:1px solid #333;
+          width:65%;
+          padding:15px 10px 15px 10px;
+          font-size:14px;
+        }
+        #clearAllBtn {
+          padding:12px 20px;
+          font-size: 18px;
+          color:#333;
+          background-color:#fff;
+          border:1px solid #a5a2a2;
+        }
       }
+      &:last-child{
+        margin:0px;
+      }
+      #removeTaskBtn {
+        opacity:0%;
+        transition:0.3s opacity;
+        margin:10px 10px 10px 74px;
+        background-color:#3564A4;
+        border:none;
+        font-size:20px;
+        &:hover{
+            cursor:pointer;
+          }
+      }
+      &:hover #removeTaskBtn{
+          opacity:100%;
+        }
       #newCheckbox, #checkbox {
         width:20px;
         height:20px;
       }
-
-      #newTask{
-        border:1px solid #333;
-        width:65%;
-        padding:10px 10px 10px 10px;
-        font-size:14px;
-      }
       span {
-        width:65%;
-        // border:1px solid #333;
         width:65%;
         padding:0 10px;
         font-size:14px;
+        color:#DDE2EC;
+        text-align: left;
+        font-size:25px;
       }
       // span {
-      //   // text-decoration: line-through; //kako da dodajem klasu u vue methods
+      //   // text-decoration: line-through; //kako da dodajem klasu u vue methods ako je checkbox checked
       // }
     }
   }
